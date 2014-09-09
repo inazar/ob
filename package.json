@@ -1,0 +1,20 @@
+{
+  "author": "N.I. <inazar@me.com>",
+  "name": "ob-test",
+  "description": "Openbucks test",
+  "version": "0.0.1",
+  "engines": {
+    "node": "0.10.x"
+  },
+  "dependencies": {
+    "body-parser": "^1.8.1",
+    "coffee-script": "^1.8.0",
+    "connect-assets": "^4.3.0",
+    "connect-assets-jsprimer": "^0.1.6",
+    "express": "^4.9.0",
+    "install": "^0.1.7",
+    "jade": "^1.6.0",
+    "node-sass": "^0.9.3",
+    "npm": "^1.4.26"
+  }
+}

@@ -1,0 +1,35 @@
+extends layout
+block content
+  h2 Proceed to payment
+  p Product: #{description}
+  p Price: #{amount} #{currency}
+  form(method="POST", action="https://demo-pay.openbucks.com/payment_v3.php")
+    input(type="hidden" name="req_currency_code" value="#{currency}")
+    input(type="hidden" name="req_amount" value="#{amount}")
+    input(type="hidden" name="req_item_description" value="#{description}")
+    input(type="hidden" name="req_merchant_tracking_id" value="#{tracking}")
+    input(type="hidden" name="req_customer_anonymous_id" value="#{customer}")
+    input(type="hidden" name="req_public_key" value="#{key}")
+    input(type="hidden" name="req_token" value="#{token}")
+    input(type="hidden" name="req_hash" value="#{hash}")
+    input(type="hidden" name="req_customer_info_email" value="#{email}")
+    
+    //- !-- Optional values, see below Optional Hidden Form Fields for explanations. -->
+
+    //- input type="hidden" name="req_product_id" value="PRODUCT_ID"
+    input(id="success_url" type="hidden" name="req_success_url" value="#{success}")
+    input(id="cancel_url" type="hidden" name="req_cancel_url" value="#{cancel}")
+    //- input type="hidden" name="req_select_card" value="SELECT_CARD"
+    //- input type="hidden" name="req_force_cards" value="FORCE_CARD1,FORCE_CARD2,..."
+    //- input type="hidden" name="req_sub_property_id" value="SUB_PROPERTY_ID"
+    //- input type="hidden" name="req_sub_property_name" value="SUB_PROPERTY_NAME"
+    //- input type="hidden" name="req_sub_property_url" value="SUB_PROPERTY_URL"
+    button.openbucks(type="submit")
+        img(draggable="false" src="https://demo-pay.openbucks.com/paybutton_v2.php?pubkey=#{key}&amp;style=obx-123-24-wh", alt="Pay with Gift Cards", style="border: 0;")
+  button.cancel(onclick="location='/'") Cancel
+
+  script.
+    var s = document.getElementById('success_url'), c = document.getElementById('cancel_url');
+    console.log(s.value, typeof s.value)
+    s.value = location.origin + (s.value === 'undefined' ? '' : s.value);
+    c.value = location.origin + (c.value === 'undefined' ? '' : c.value);

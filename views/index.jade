@@ -1,0 +1,10 @@
+extends layout
+block content
+  h2 Payment amount
+  if query.error
+    .error #{query.error}
+  form(method="POST", action="/confirm")
+    .amount
+      input(type="number", min="0", name="amount")
+      span &nbsp;USD
+    button.continue(type="submit") Continue 

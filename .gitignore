@@ -1,0 +1,13 @@
+npm-debug.log
+node_modules
+.sass-cache
+
+
+# Windows crap
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Mac crap
+.DS_Store

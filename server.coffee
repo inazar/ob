@@ -3,6 +3,7 @@ express = require 'express'
 bodyParser = require 'body-parser'
 assets = require 'connect-assets'
 crypto = require 'crypto'
+xmlparser = require 'express-xml-bodyparser'
 # jsPrimer = require 'connect-assets-jsprimer'
 
 api =
@@ -21,6 +22,7 @@ customer =
 #### Basic application initialization
 # Create app instance.
 app = express()
+transactions = Object.create(null)
 
 # Define Port
 port = process.env.PORT or process.env.VMC_APP_PORT or 8088
@@ -35,8 +37,8 @@ app.set 'view engine', 'jade'
 # Set the public folder as static assets.
 # app.use express.static('assets')
 
-app.use bodyParser.urlencoded extended: false, verify: (req, res, buff) -> req.rawBody = buff
-app.use bodyParser.raw()
+app.use xmlparser()
+app.use bodyParser.urlencoded extended: false
 
 app.get '/', (req, res) ->
   res.render 'index.jade',
@@ -72,8 +74,8 @@ app.get '/success', (req, res) -> res.render 'success.jade'
 app.post '/postback', (req, res) ->
   console.log 'Postback query', req.query
   console.log 'Postback body', req.body
-  console.log 'Postback raw body', req.rawBody
-  res.send 200
+  console.log 'URL', req.url
+  res.status(200).end()
 
 app.listen port, ->
   console.log "OB Test is listening on %d in '%s' mode", port, process.env.NODE_ENV || 'development'

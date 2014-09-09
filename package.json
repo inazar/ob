@@ -12,6 +12,7 @@
     "connect-assets": "^4.3.0",
     "connect-assets-jsprimer": "^0.1.6",
     "express": "^4.9.0",
+    "express-xml-bodyparser": "0.0.4",
     "install": "^0.1.7",
     "jade": "^1.6.0",
     "node-sass": "^0.9.3",

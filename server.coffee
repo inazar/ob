@@ -54,7 +54,7 @@ app.post '/confirm', (req, res) ->
   unique = crypto.createHash('md5').update(now).digest('hex')
   now = now.split('T')
   token = "#{now[0]} #{now[1].split('.')[0]} #{unique.substr(0, 10)}"
-  hash = crypto.createHash('sha256').update(token+api.secret+product.tracking+amount+'USD').digest('hex')
+  hash = crypto.createHash('sha256').update(token+api.secret+unique+amount+'USD').digest('hex')
   tracking[unique] =
     complete: false
     token: token

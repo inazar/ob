@@ -2,9 +2,9 @@ extends layout
 block content
   if complete
     h2 Success
-    p Product: #{response.payment.merchantdata.itemdescription}
+    p Product: #{response.payment.merchantData.itemDescription}
     p Amount: #{amount} #{currency}
-    p Transaction ID: #{response.payment.transaction.transactionid}
+    p Transaction ID: #{response.payment.transaction.transactionID}
   else
     h2 Unknown
     p Transaction unknown

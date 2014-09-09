@@ -82,17 +82,17 @@ app.post '/postback', (req, res) ->
   return if not data?.payment
   console.log 'Postback:', util.inspect data, depth: null
   # Validate API key
-  return console.log "API key is invalid: #{tmp}" if api.public isnt (tmp = data.payment.merchantdata?.publickey)
+  return console.log "API key is invalid: #{tmp}" if api.public isnt (tmp = data.payment.merchantData?.publicKey)
   # Authenticate the response
-  return console.log "Authentication failed: #{tmp}" if data.payment.transaction?.pwgchash isnt (tmp = crypto.createHash('sha256').update(api.public+':'+data.payment.transaction?.pwgctrackingid+':'+api.secret).digest('hex'))
+  return console.log "Authentication failed: #{tmp}" if data.payment.transaction?.pwgcHash isnt (tmp = crypto.createHash('sha256').update(api.public+':'+data.payment.transaction?.pwgcTrackingID+':'+api.secret).digest('hex'))
   # Validate the tracking id
-  return console.log "Tracking ID unknown: #{tid}" if not (tid = data.payment.merchantdata?.merchanttrackingid) or not tracking[tid]
+  return console.log "Tracking ID unknown: #{tid}" if not (tid = data.payment.merchantData.merchanttrackingid) or not tracking[tid]
   # Validate the amount
-  return console.log "Wrong amount: #{tmp}" if tracking[tid].amount isnt (tmp = data.payment.amount?.amountvalue)
+  return console.log "Wrong amount: #{tmp}" if tracking[tid].amount isnt (tmp = data.payment.amount?.amountValue)
   # Validate the currency
-  return console.log "Wrong currency: #{tmp}" if tracking[tid].currency isnt (tmp = data.payment.amount?.currencycode)
+  return console.log "Wrong currency: #{tmp}" if tracking[tid].currency isnt (tmp = data.payment.amount.currencyCode)
   # Validate the errorCode
-  return console.log "Error code: #{tmp}" if '0' isnt (tmp = data.error?.errorcode)
+  return console.log "Error code: #{tmp}" if '0' isnt (tmp = data.error?.errorCode)
   tracking[tid].complete = true
   tracking[tid].response = data
 

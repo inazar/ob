@@ -88,7 +88,7 @@ app.post '/postback', (req, res) ->
   # Validate the tracking id
   return console.log "Tracking ID unknown: #{tid}" if not (tid = data.payment.merchantData.merchantTrackingID) or not tracking[tid]
   # Validate the amount
-  return console.log "Wrong amount: #{tmp}" if tracking[tid].amount isnt (tmp = data.payment.amount?.amountValue)
+  return console.log "Wrong amount: #{tmp}" if parseFloat(tracking[tid].amount) isnt parseFloat(tmp = data.payment.amount?.amountValue)
   # Validate the currency
   return console.log "Wrong currency: #{tmp}" if tracking[tid].currency isnt (tmp = data.payment.amount.currencyCode)
   # Validate the errorCode

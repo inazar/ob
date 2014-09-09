@@ -86,7 +86,7 @@ app.post '/postback', (req, res) ->
   # Authenticate the response
   return console.log "Authentication failed: #{tmp}" if data.payment.transaction?.pwgcHash isnt (tmp = crypto.createHash('sha256').update(api.public+':'+data.payment.transaction?.pwgcTrackingID+':'+api.secret).digest('hex'))
   # Validate the tracking id
-  return console.log "Tracking ID unknown: #{tid}" if not (tid = data.payment.merchantData.merchanttrackingid) or not tracking[tid]
+  return console.log "Tracking ID unknown: #{tid}" if not (tid = data.payment.merchantData.merchantTrackingID) or not tracking[tid]
   # Validate the amount
   return console.log "Wrong amount: #{tmp}" if tracking[tid].amount isnt (tmp = data.payment.amount?.amountValue)
   # Validate the currency

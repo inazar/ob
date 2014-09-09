@@ -32,7 +32,7 @@ app.use assets({})
 # Set View Engine.
 app.set 'view engine', 'jade'
 
-app.use xmlparser()
+app.use xmlparser explicitArray: false
 app.use bodyParser.urlencoded extended: false
 
 app.get '/', (req, res) ->
@@ -71,13 +71,30 @@ app.post '/confirm', (req, res) ->
     success: '/success'
     cancel: ''
 
-app.get '/success', (req, res) -> res.render 'success.jade'
+app.get '/success', (req, res) ->
+  transaction = tracking[req.query.tid]
+  delete tracking[req.query.tid]
+  res.render 'success.jade', transaction
 
 app.post '/postback', (req, res) ->
   res.status(200).end()
   data = req.body.pwgc?.response
-  return if not data
+  return if not data?.payment
   console.log 'Postback:', util.inspect data, depth: null
+  # Validate API key
+  return console.log "API key is invalid: #{tmp}" if api.public isnt (tmp = data.payment.merchantdata?.publickey)
+  # Authenticate the response
+  return console.log "Authentication failed: #{tmp}" if data.payment.transaction?.pwgchash isnt (tmp = crypto.createHash('sha256').update(api.public+':'+data.payment.transaction?.pwgctrackingid+':'+api.secret).digest('hex'))
+  # Validate the tracking id
+  return console.log "Tracking ID unknown: #{tid}" if not (tid = data.payment.merchantdata?.merchanttrackingid) or not tracking[tid]
+  # Validate the amount
+  return console.log "Wrong amount: #{tmp}" if tracking[tid].amount isnt (tmp = data.payment.amount?.amountvalue)
+  # Validate the currency
+  return console.log "Wrong currency: #{tmp}" if tracking[tid].currency isnt (tmp = data.payment.amount?.currencycode)
+  # Validate the errorCode
+  return console.log "Error code: #{tmp}" if '0' isnt (tmp = data.error?.errorcode)
+  tracking[tid].complete = true
+  tracking[tid].response = data
 
 app.listen port, ->
   console.log "OB Test is listening on %d in '%s' mode", port, process.env.NODE_ENV || 'development'

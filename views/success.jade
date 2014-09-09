@@ -1,4 +1,11 @@
 extends layout
 block content
-  h2 Success
+  if complete
+    h2 Success
+    p Product: #{response.payment.merchantdata.itemdescription}
+    p Amount: #{amount} #{currency}
+    p Transaction ID: #{response.payment.transaction.transactionid}
+  else
+    h2 Unknown
+    p Transaction unknown
   button.continue(onclick="location='/'") Continue

@@ -1,10 +1,10 @@
 path = require 'path'
+util = require 'util'
 express = require 'express'
 bodyParser = require 'body-parser'
 assets = require 'connect-assets'
 crypto = require 'crypto'
 xmlparser = require 'express-xml-bodyparser'
-# jsPrimer = require 'connect-assets-jsprimer'
 
 api =
   public: '12d8f0a1-bdeb-4e1f-847a-11bc438c782b'
@@ -28,13 +28,9 @@ port = process.env.PORT or process.env.VMC_APP_PORT or 8088
 
 #### View initialization
 app.use assets({})
-# jsPrimer.loadFiles assets, console.log
 
 # Set View Engine.
 app.set 'view engine', 'jade'
-
-# Set the public folder as static assets.
-# app.use express.static('assets')
 
 app.use xmlparser()
 app.use bodyParser.urlencoded extended: false
@@ -55,6 +51,8 @@ app.post '/confirm', (req, res) ->
   now = now.split('T')
   token = "#{now[0]} #{now[1].split('.')[0]} #{unique.substr(0, 10)}"
   hash = crypto.createHash('sha256').update(token+api.secret+unique+amount+'USD').digest('hex')
+  console.log 'Tracking ID:', unique
+  console.log 'Token:', token
   tracking[unique] =
     complete: false
     token: token
@@ -76,10 +74,10 @@ app.post '/confirm', (req, res) ->
 app.get '/success', (req, res) -> res.render 'success.jade'
 
 app.post '/postback', (req, res) ->
-  console.log 'Postback query', req.query
-  console.log 'Postback body', req.body
-  console.log 'URL', req.url
   res.status(200).end()
+  data = req.body.pwgc?.response
+  return if not data
+  console.log 'Postback:', util.inspect data, depth: null
 
 app.listen port, ->
   console.log "OB Test is listening on %d in '%s' mode", port, process.env.NODE_ENV || 'development'

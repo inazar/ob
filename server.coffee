@@ -13,7 +13,6 @@ api =
 
 product =
   description: 'Dummy product'
-  tracking: '12345'
 
 customer =
   id: 'dummy'
@@ -22,7 +21,7 @@ customer =
 #### Basic application initialization
 # Create app instance.
 app = express()
-transactions = Object.create(null)
+tracking = Object.create(null)
 
 # Define Port
 port = process.env.PORT or process.env.VMC_APP_PORT or 8088
@@ -52,15 +51,20 @@ app.post '/confirm', (req, res) ->
   return res.redirect("/?error=Wrong amount: #{req.param('amount')}") if isNaN(amount = parseFloat amount) or amount <= 0
   amount = (Math.round(amount*100)/100).toFixed(2)
   now = new Date().toISOString()
-  unique = crypto.createHash('md5').update(now).digest('hex').substr(0, 10)
+  unique = crypto.createHash('md5').update(now).digest('hex')
   now = now.split('T')
-  token = "#{now[0]} #{now[1].split('.')[0]} #{unique}"
+  token = "#{now[0]} #{now[1].split('.')[0]} #{unique.substr(0, 10)}"
   hash = crypto.createHash('sha256').update(token+api.secret+product.tracking+amount+'USD').digest('hex')
+  tracking[unique] =
+    complete: false
+    token: token
+    amount: amount
+    currency: 'USD'
   res.render 'confirm.jade',
     amount: amount
     currency: 'USD'
     description: product.description
-    tracking: product.tracking
+    tracking: unique
     customer: customer.id
     email: customer.email
     key: api.public
